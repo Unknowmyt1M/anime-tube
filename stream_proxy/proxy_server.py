@@ -1,16 +1,24 @@
 """
 =============================================================================
-AniTube Stream Proxy & Dynamic Link Refresher
+AniTube Stream Proxy & Unified Anime/Movie Scrapers API
 =============================================================================
 This server automatically resolves direct CloudDL / GD Mirror Bot links,
-handles HTTP 302 redirects to get fresh active video URLs, and proxies
-byte ranges for seamless HTML5 video streaming and seeking without expiry issues.
+extracts active anime & movie stream sources via scrapers/anime_movie_scrapers.py,
+and proxies byte ranges for seamless HTML5 video streaming and seeking.
 """
 
-import re
+import sys
+import os
 import requests
 from flask import Flask, request, Response, jsonify
 from flask_cors import CORS
+
+# Add scrapers path to sys.path
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'scrapers')))
+try:
+    from anime_movie_scrapers import UnifiedAnimeMovieExtractor
+except ImportError:
+    UnifiedAnimeMovieExtractor = None
 
 app = Flask(__name__)
 CORS(app)
@@ -36,27 +44,48 @@ def resolve_fresh_url(initial_url):
 def root_index():
     return jsonify({
         'status': 'online',
-        'message': 'AniTube Stream Proxy & Link Refresher is active!',
-        'health_check': 'http://localhost:5005/health',
-        'stream_endpoint': 'http://localhost:5005/stream?url=<ENCODED_URL>'
+        'message': 'AniTube Stream Proxy & Anime/Movie Scraper API is active!',
+        'endpoints': {
+            'health': 'http://localhost:5005/health',
+            'stream': 'http://localhost:5005/stream?url=<ENCODED_URL>',
+            'search': 'http://localhost:5005/api/search?q=<QUERY>',
+            'extract': 'http://localhost:5005/api/extract?id=<ANIME_ID>&ep=<EPISODE_NUM>'
+        }
     })
 
 @app.route('/health', methods=['GET'])
 def health_check():
     return jsonify({
         'status': 'active',
-        'service': 'AniTube Stream Proxy & Link Refresher',
-        'version': '1.0.0'
+        'service': 'AniTube Stream Proxy & Scraper API',
+        'version': '1.1.0'
     })
+
+@app.route('/api/search', methods=['GET'])
+def api_search():
+    query = request.args.get('q', '')
+    if not query:
+        return jsonify({'error': 'Missing query parameter q'}), 400
+    
+    if UnifiedAnimeMovieExtractor:
+        results = UnifiedAnimeMovieExtractor.search_all(query)
+        return jsonify({'query': query, 'count': len(results), 'results': results})
+    else:
+        return jsonify({'error': 'Scraper module unavailable'}), 500
+
+@app.route('/api/extract', methods=['GET'])
+def api_extract():
+    anime_id = request.args.get('id', 'solo-leveling')
+    ep_num = int(request.args.get('ep', 1))
+    
+    if UnifiedAnimeMovieExtractor:
+        streams = UnifiedAnimeMovieExtractor.get_streams(anime_id, ep_num)
+        return jsonify({'anime_id': anime_id, 'episode': ep_num, 'streams': streams})
+    else:
+        return jsonify({'error': 'Scraper module unavailable'}), 500
 
 @app.route('/stream', methods=['GET'])
 def stream_video():
-    """
-    Proxies video playback with HTTP Range support for HTML5 seeking.
-    Query Params:
-      - url: Target direct download or GD mirror URL
-      - fid: (Optional) File ID parameter
-    """
     target_url = request.args.get('url')
     fid = request.args.get('fid')
 
@@ -66,10 +95,8 @@ def stream_video():
     if not target_url:
         return jsonify({'error': 'Missing url or fid parameter'}), 400
 
-    # Resolve fresh working target URL (handles redirects & refreshed tokens)
     fresh_url = resolve_fresh_url(target_url)
 
-    # Forward Range headers for seeking
     headers = {}
     range_header = request.headers.get('Range', None)
     if range_header:
@@ -78,7 +105,6 @@ def stream_video():
     try:
         req = session.get(fresh_url, headers=headers, stream=True, timeout=15)
         
-        # Build response headers for HTML5 Video element
         resp_headers = {
             'Content-Type': req.headers.get('Content-Type', 'video/mp4'),
             'Accept-Ranges': 'bytes',
@@ -106,5 +132,5 @@ def stream_video():
         return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':
-    print("[AniTube Proxy] Stream Proxy & Link Refresher running on http://localhost:5005")
+    print("[AniTube Proxy] Stream Proxy & Scraper API running on http://localhost:5005")
     app.run(host='0.0.0.0', port=5005, debug=True)
