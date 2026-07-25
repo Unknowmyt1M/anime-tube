@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User Profile - AniTube</title>
+  <!-- Google Fonts & FontAwesome -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <div class="app-container">
+    
+    <!-- DESKTOP SIDEBAR NAVIGATION -->
+    <aside class="sidebar-nav">
+      <div class="brand-logo">
+        <i class="fa-solid fa-play"></i>
+        <span>Ani<span>Tube</span></span>
+      </div>
+
+      <div class="nav-group">
+        <span class="nav-group-title">Menu</span>
+        <a href="index.html" class="nav-item">
+          <i class="fa-solid fa-house"></i> Home
+        </a>
+        <a href="shorts.html" class="nav-item">
+          <i class="fa-solid fa-bolt"></i> Shorts
+        </a>
+        <a href="watchlist.html" class="nav-item">
+          <i class="fa-solid fa-bookmark"></i> Watchlist
+        </a>
+        <a href="downloads.html" class="nav-item">
+          <i class="fa-solid fa-download"></i> Downloads
+        </a>
+        <a href="profile.html" class="nav-item active">
+          <i class="fa-solid fa-user"></i> Profile
+        </a>
+      </div>
+    </aside>
+
+    <!-- MAIN CONTENT AREA -->
+    <main class="main-wrapper">
+      
+      <!-- TOP HEADER BAR -->
+      <header class="top-header">
+        <div class="mobile-brand">
+          <i class="fa-solid fa-user" style="color:var(--accent-purple);"></i>
+          <span>Profile</span>
+        </div>
+
+        <div class="header-search-bar">
+          <i class="fa-solid fa-magnifying-glass search-icon-left"></i>
+          <input type="text" class="header-search-input" placeholder="Search history...">
+        </div>
+
+        <div class="header-actions">
+          <a href="profile.html" class="icon-btn" title="Notifications"><i class="fa-regular fa-bell"></i></a>
+        </div>
+      </header>
+
+      <!-- PAGE CONTAINER -->
+      <div class="page-container">
+        
+        <!-- PROFILE USER HEADER CARD -->
+        <div class="profile-card-header">
+          <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=200&auto=format&fit=crop" class="profile-avatar-lg" alt="Darko">
+          <div class="profile-info">
+            <h1 class="profile-name">Darko</h1>
+            <span class="profile-badge"><i class="fa-solid fa-crown"></i> Anime Otaku Level 25</span>
+            <span style="font-size:0.85rem; color:var(--text-secondary);">Premium Member • darko@anitube.io</span>
+          </div>
+        </div>
+
+        <!-- WATCH STATS GRID -->
+        <div class="stats-grid">
+          <div class="stat-box">
+            <span class="stat-value">148</span>
+            <span class="stat-label">Episodes Watched</span>
+          </div>
+          <div class="stat-box">
+            <span class="stat-value">42h</span>
+            <span class="stat-label">Watch Time</span>
+          </div>
+          <div class="stat-box">
+            <span class="stat-value">14</span>
+            <span class="stat-label">Anime Completed</span>
+          </div>
+          <div class="stat-box">
+            <span class="stat-value">2.4K</span>
+            <span class="stat-label">Shorts Watched</span>
+          </div>
+        </div>
+
+        <!-- YOUTUBE STYLE WATCH HISTORY ROWS (GROUPED BY TODAY / YESTERDAY) -->
+        <div class="page-header">
+          <h2 class="page-title"><i class="fa-solid fa-clock-rotate-left" style="color:var(--accent-purple);"></i> Watch History</h2>
+        </div>
+
+        <!-- GROUP 1: TODAY -->
+        <div class="history-row-container">
+          <h3 class="history-group-title">Today</h3>
+          <div class="horizontal-scroller" id="historyTodayRow">
+            <!-- Rendered via JS -->
+          </div>
+        </div>
+
+        <!-- GROUP 2: YESTERDAY -->
+        <div class="history-row-container">
+          <h3 class="history-group-title">Yesterday</h3>
+          <div class="horizontal-scroller" id="historyYesterdayRow">
+            <!-- Rendered via JS -->
+          </div>
+        </div>
+
+      </div>
+
+    </main>
+
+    <!-- MOBILE BOTTOM NAVIGATION -->
+    <nav class="bottom-nav">
+      <a href="index.html" class="bottom-nav-item">
+        <i class="fa-solid fa-house"></i>
+        <span>Home</span>
+      </a>
+      <a href="shorts.html" class="bottom-nav-item">
+        <i class="fa-solid fa-bolt"></i>
+        <span>Shorts</span>
+      </a>
+      <a href="watchlist.html" class="bottom-nav-item">
+        <i class="fa-solid fa-bookmark"></i>
+        <span>Watchlist</span>
+      </a>
+      <a href="downloads.html" class="bottom-nav-item">
+        <i class="fa-solid fa-download"></i>
+        <span>Downloads</span>
+      </a>
+      <a href="profile.html" class="bottom-nav-item active">
+        <i class="fa-solid fa-user"></i>
+        <span>Profile</span>
+      </a>
+    </nav>
+
+  </div>
+
+  <script src="js/config.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/state.js"></script>
+  <script src="js/common.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const todayContainer = document.getElementById('historyTodayRow');
+      const yesterdayContainer = document.getElementById('historyYesterdayRow');
+
+      const historyItems = ANITUBE_STATE.history && ANITUBE_STATE.history.length > 0
+        ? ANITUBE_STATE.history
+        : ANITUBE_DATA.continueWatching.map(item => ({
+            animeId: item.id,
+            animeTitle: item.title,
+            episodeId: item.id,
+            episodeNum: parseInt(item.episode.replace(/\D/g, '') || '1', 10),
+            episodeTitle: item.episode,
+            thumbnail: item.posterUrl,
+            position: 450,
+            duration: 1440
+          }));
+
+      if (todayContainer) {
+        todayContainer.innerHTML = historyItems.map(item => {
+          const pct = item.duration ? Math.min(100, Math.floor((item.position / item.duration) * 100)) : 45;
+          return `
+            <div class="anime-card anime-card-wide" onclick="window.location.href='player.html?id=${item.animeId}&ep=${item.episodeNum}'">
+              <div class="card-thumb-wrapper">
+                <img src="${item.thumbnail}" class="card-thumb" alt="${item.animeTitle}">
+                <div class="card-progress-bar">
+                  <div class="card-progress-fill" style="width: ${pct}%;"></div>
+                </div>
+              </div>
+              <div class="card-info">
+                <h3 class="card-title">${item.animeTitle}</h3>
+                <div class="card-subtext">
+                  <span>Episode ${item.episodeNum}</span>
+                  <span style="color:var(--accent-purple); font-weight:700;">${pct}%</span>
+                </div>
+              </div>
+            </div>
+          `;
+        }).join('');
+      }
+
+      if (yesterdayContainer) {
+        yesterdayContainer.innerHTML = ANITUBE_DATA.trending.slice(0, 4).map(item => `
+          <div class="anime-card anime-card-wide" onclick="playShow('${item.id}')">
+            <div class="card-thumb-wrapper">
+              <img src="${item.posterUrl}" class="card-thumb" alt="${item.title}">
+              <div class="card-progress-bar">
+                <div class="card-progress-fill" style="width: 100%;"></div>
+              </div>
+            </div>
+            <div class="card-info">
+              <h3 class="card-title">${item.title}</h3>
+              <div class="card-subtext">
+                <span>Completed</span>
+                <span style="color:#f59e0b;"><i class="fa-solid fa-check"></i></span>
+              </div>
+            </div>
+          </div>
+        `).join('');
+      }
+    });
+  </script>
+</body>
+</html>

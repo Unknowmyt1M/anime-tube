@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Search Anime - AniTube</title>
+  <!-- Google Fonts & FontAwesome -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <div class="app-container">
+    
+    <!-- DESKTOP SIDEBAR NAVIGATION -->
+    <aside class="sidebar-nav">
+      <div class="brand-logo">
+        <i class="fa-solid fa-play"></i>
+        <span>Ani<span>Tube</span></span>
+      </div>
+
+      <div class="nav-group">
+        <span class="nav-group-title">Menu</span>
+        <a href="index.html" class="nav-item">
+          <i class="fa-solid fa-house"></i> Home
+        </a>
+        <a href="shorts.html" class="nav-item">
+          <i class="fa-solid fa-bolt"></i> Shorts
+        </a>
+        <a href="watchlist.html" class="nav-item">
+          <i class="fa-solid fa-bookmark"></i> Watchlist
+        </a>
+        <a href="downloads.html" class="nav-item">
+          <i class="fa-solid fa-download"></i> Downloads
+        </a>
+        <a href="profile.html" class="nav-item">
+          <i class="fa-solid fa-user"></i> Profile
+        </a>
+      </div>
+    </aside>
+
+    <!-- MAIN CONTENT AREA -->
+    <main class="main-wrapper">
+      
+      <!-- TOP HEADER BAR (MODIFIED MOBILE BACK HEADER FOR SEARCH) -->
+      <header class="top-header">
+        <a href="index.html" class="mobile-brand">
+          <i class="fa-solid fa-chevron-left"></i>
+          <span>Search</span>
+        </a>
+
+        <div class="header-search-bar">
+          <i class="fa-solid fa-magnifying-glass search-icon-left"></i>
+          <input type="text" id="globalSearchInput" class="header-search-input" placeholder="Search anime, movies, characters...">
+        </div>
+
+        <div class="header-actions">
+          <a href="profile.html" class="icon-btn" title="Notifications"><i class="fa-regular fa-bell"></i></a>
+        </div>
+      </header>
+
+      <!-- SEARCH PAGE MAIN CONTAINER -->
+      <div class="page-container">
+        
+        <!-- SEARCH RESULTS QUERY HEADER -->
+        <div class="page-header" style="margin-bottom:1rem;">
+          <h1 class="page-title" id="txtSearchQueryHeader">
+            <i class="fa-solid fa-magnifying-glass" style="color:var(--accent-purple);"></i> Search Results
+          </h1>
+          <span style="color:var(--text-secondary); font-weight:600;" id="txtSearchResultCount">3 Results</span>
+        </div>
+
+        <!-- RECENT SEARCHES & TRENDING CHIPS SECTION -->
+        <div style="background-color:var(--surface-dark); border:1px solid var(--border-subtle); border-radius:var(--radius-xl); padding:1.25rem; margin-bottom:1.5rem; display:flex; flex-direction:column; gap:1rem;">
+          
+          <!-- Recent Searches Chips -->
+          <div>
+            <span style="font-size:0.75rem; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.5px;">🕒 Recent Search History</span>
+            <div class="episode-range-chips" id="recentSearchesChipsRow" style="margin-top:0.5rem;">
+              <!-- Populated via JS -->
+            </div>
+          </div>
+
+          <!-- Trending Topics Chips -->
+          <div>
+            <span style="font-size:0.75rem; font-weight:700; color:var(--accent-purple); text-transform:uppercase; letter-spacing:0.5px;">🔥 Trending Topics</span>
+            <div class="episode-range-chips" style="margin-top:0.5rem;">
+              <button class="range-chip" onclick="location.href='search.html?q=Solo%20Leveling'">🔥 Solo Leveling Ep 12</button>
+              <button class="range-chip" onclick="location.href='search.html?q=Demon%20Slayer'">🌫️ Swordsmith Village</button>
+              <button class="range-chip" onclick="location.href='search.html?q=One%20Piece'">🏴‍☠️ One Piece Gear 5</button>
+              <button class="range-chip" onclick="location.href='search.html?q=Jujutsu%20Kaisen'">🤞 Gojo Satoru</button>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- CATEGORY CHIPS SCROLLER FILTER -->
+        <div class="chips-container" style="padding:0 0 1.5rem 0;">
+          <button class="chip active">All Results</button>
+          <button class="chip">Anime Shows</button>
+          <button class="chip">Movies</button>
+          <button class="chip">Series</button>
+          <button class="chip">Top Rated</button>
+        </div>
+
+        <!-- MATCHING SEARCH RESULTS CARDS LIST -->
+        <div class="search-results-list" id="searchResultsListContainer">
+          <!-- Rendered dynamically -->
+        </div>
+
+        <!-- RECOMMENDED FEED BELOW SEARCH -->
+        <div class="section-wrapper" style="padding: 3rem 0 1rem 0;">
+          <div class="section-header">
+            <h3 class="section-title"><i class="fa-solid fa-sparkles"></i> Recommended Anime</h3>
+          </div>
+          <div class="horizontal-scroller" id="searchRecRow">
+            <!-- Populated via JS -->
+          </div>
+        </div>
+
+      </div>
+
+    </main>
+
+    <!-- MOBILE BOTTOM NAVIGATION -->
+    <nav class="bottom-nav">
+      <a href="index.html" class="bottom-nav-item">
+        <i class="fa-solid fa-house"></i>
+        <span>Home</span>
+      </a>
+      <a href="shorts.html" class="bottom-nav-item">
+        <i class="fa-solid fa-bolt"></i>
+        <span>Shorts</span>
+      </a>
+      <a href="watchlist.html" class="bottom-nav-item">
+        <i class="fa-solid fa-bookmark"></i>
+        <span>Watchlist</span>
+      </a>
+      <a href="downloads.html" class="bottom-nav-item">
+        <i class="fa-solid fa-download"></i>
+        <span>Downloads</span>
+      </a>
+      <a href="profile.html" class="bottom-nav-item">
+        <i class="fa-solid fa-user"></i>
+        <span>Profile</span>
+      </a>
+    </nav>
+
+  </div>
+
+  <!-- Scripts -->
+  <script src="js/data.js"></script>
+  <script src="js/state.js"></script>
+  <script src="js/common.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const query = urlParams.get('q') || '';
+
+      const queryHeader = document.getElementById('txtSearchQueryHeader');
+      const countEl = document.getElementById('txtSearchResultCount');
+      const container = document.getElementById('searchResultsListContainer');
+      const inputEl = document.getElementById('globalSearchInput');
+      const recentChipsContainer = document.getElementById('recentSearchesChipsRow');
+
+      if (inputEl && query) inputEl.value = query;
+
+      if (queryHeader) {
+        queryHeader.innerHTML = query 
+          ? `<i class="fa-solid fa-magnifying-glass" style="color:var(--accent-purple);"></i> Search: "${query}"`
+          : `<i class="fa-solid fa-magnifying-glass" style="color:var(--accent-purple);"></i> All Anime & Movies`;
+      }
+
+      // Render Recent Search Chips
+      const recents = ANITUBE_STATE.recentSearches || ['Solo Leveling', 'Demon Slayer', 'Jujutsu Kaisen'];
+      if (recentChipsContainer) {
+        recentChipsContainer.innerHTML = recents.map(term => `
+          <button class="range-chip" onclick="location.href='search.html?q=${encodeURIComponent(term)}'">
+            🕒 ${term}
+          </button>
+        `).join('');
+      }
+
+      // Filter Anime Data matching query
+      const allShows = [...ANITUBE_DATA.trending, ...ANITUBE_DATA.recommendations];
+      let matches = allShows;
+
+      if (query) {
+        const qLower = query.toLowerCase();
+        matches = allShows.filter(item => 
+          item.title.toLowerCase().includes(qLower) || 
+          item.genres.some(g => g.toLowerCase().includes(qLower))
+        );
+      }
+
+      if (countEl) countEl.textContent = `${matches.length} Results Found`;
+
+      if (container) {
+        if (matches.length === 0) {
+          container.innerHTML = `
+            <div style="text-align:center; padding:3rem 1rem; background-color:var(--surface-dark); border-radius:var(--radius-xl); border:1px solid var(--border-subtle);">
+              <i class="fa-solid fa-ghost" style="font-size:3rem; color:var(--text-muted); margin-bottom:1rem;"></i>
+              <h3>No direct matches found for "${query}"</h3>
+              <p style="color:var(--text-secondary); font-size:0.88rem; margin-top:0.5rem;">Try searching for "Solo Leveling", "Demon Slayer", or "Action"</p>
+            </div>
+          `;
+        } else {
+          container.innerHTML = matches.map(item => `
+            <div class="search-result-card" onclick="playShow('${item.id}')">
+              <img src="${item.posterUrl}" class="search-result-thumb" alt="${item.title}">
+              <div class="search-result-content">
+                <h3 class="search-result-title">${item.title}</h3>
+                <div class="search-result-meta">
+                  <span style="color:#f59e0b;"><i class="fa-solid fa-star"></i> ${item.rating || '9.0'}</span> • 
+                  <span>${(item.genres || []).join(', ')}</span> • 
+                  <span>${item.episodesCount || 12} Episodes</span> • 
+                  <span style="color:var(--accent-purple); font-weight:700;">Sub & Dub</span>
+                </div>
+                <p style="font-size:0.82rem; color:var(--text-secondary); margin-top:0.3rem; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;">
+                  Stream high definition anime episodes and movies on AniTube. Full HD quality with fast source streaming.
+                </p>
+              </div>
+            </div>
+          `).join('');
+        }
+      }
+
+      // Render bottom recommendations
+      const recRow = document.getElementById('searchRecRow');
+      if (recRow) {
+        recRow.innerHTML = ANITUBE_DATA.recommendations.map(item => `
+          <div class="anime-card" onclick="playShow('${item.id}')">
+            <div class="card-thumb-wrapper">
+              <img src="${item.posterUrl}" class="card-thumb" alt="${item.title}">
+              <div class="card-rating"><i class="fa-solid fa-star"></i> ${item.rating}</div>
+            </div>
+            <div class="card-info">
+              <h3 class="card-title">${item.title}</h3>
+              <div class="card-subtext"><span>${item.genres.join(', ')}</span></div>
+            </div>
+          </div>
+        `).join('');
+      }
+    });
+  </script>
+</body>
+</html>

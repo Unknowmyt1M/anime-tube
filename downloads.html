@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Offline Downloads - AniTube</title>
+  <!-- Google Fonts & FontAwesome -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <div class="app-container">
+    
+    <!-- DESKTOP SIDEBAR NAVIGATION -->
+    <aside class="sidebar-nav">
+      <div class="brand-logo">
+        <i class="fa-solid fa-play"></i>
+        <span>Ani<span>Tube</span></span>
+      </div>
+
+      <div class="nav-group">
+        <span class="nav-group-title">Menu</span>
+        <a href="index.html" class="nav-item">
+          <i class="fa-solid fa-house"></i> Home
+        </a>
+        <a href="shorts.html" class="nav-item">
+          <i class="fa-solid fa-bolt"></i> Shorts
+        </a>
+        <a href="watchlist.html" class="nav-item">
+          <i class="fa-solid fa-bookmark"></i> Watchlist
+        </a>
+        <a href="downloads.html" class="nav-item active">
+          <i class="fa-solid fa-download"></i> Downloads
+        </a>
+        <a href="profile.html" class="nav-item">
+          <i class="fa-solid fa-user"></i> Profile
+        </a>
+      </div>
+    </aside>
+
+    <!-- MAIN CONTENT AREA -->
+    <main class="main-wrapper">
+      
+      <!-- TOP HEADER BAR -->
+      <header class="top-header">
+        <div class="mobile-brand">
+          <i class="fa-solid fa-download" style="color:var(--accent-purple);"></i>
+          <span>Downloads</span>
+        </div>
+
+        <div class="header-search-bar">
+          <i class="fa-solid fa-magnifying-glass search-icon-left"></i>
+          <input type="text" class="header-search-input" placeholder="Search downloaded episodes...">
+        </div>
+
+        <div class="header-actions">
+          <a href="profile.html" class="icon-btn" title="Notifications"><i class="fa-regular fa-bell"></i></a>
+        </div>
+      </header>
+
+      <!-- PAGE CONTAINER -->
+      <div class="page-container">
+        <div class="page-header">
+          <h1 class="page-title"><i class="fa-solid fa-download" style="color:var(--accent-purple);"></i> Offline Downloads</h1>
+        </div>
+
+        <!-- STORAGE METER -->
+        <div style="background-color:var(--surface-dark); border:1px solid var(--border-subtle); border-radius:var(--radius-xl); padding:1.5rem; margin-bottom:2rem; display:flex; flex-direction:column; gap:0.75rem;">
+          <div style="display:flex; justify-content:space-between; font-weight:700; font-size:0.9rem;">
+            <span>Device Storage Usage</span>
+            <span style="color:var(--accent-purple);">14.2 GB / 64 GB Used</span>
+          </div>
+          <div style="height:8px; background:rgba(255,255,255,0.1); border-radius:var(--radius-full); overflow:hidden;">
+            <div style="width: 25%; height:100%; background:var(--accent-purple); border-radius:var(--radius-full);"></div>
+          </div>
+        </div>
+
+        <!-- DOWNLOADED EPISODES CARDS -->
+        <h3 style="margin-bottom:1rem; font-weight:800;"><i class="fa-solid fa-circle-check" style="color:var(--accent-purple);"></i> Ready To Watch Offline</h3>
+        <div style="display:flex; flex-direction:column; gap:1rem;">
+          
+          <div class="search-result-card" onclick="playShow('demon-slayer')">
+            <img src="https://images.unsplash.com/photo-1534447677768-be436bb09401?q=80&w=600&auto=format&fit=crop" class="search-result-thumb" alt="Demon Slayer">
+            <div class="search-result-content">
+              <h3 class="search-result-title">Demon Slayer: Kimetsu no Yaiba</h3>
+              <div class="search-result-meta">
+                <span>Episode 8 • Swordsmith Village</span> • <span>340 MB</span> • <span style="color:var(--accent-purple); font-weight:700;">1080p Full HD</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="search-result-card" onclick="playShow('solo-leveling')">
+            <img src="https://images.unsplash.com/photo-1578632767115-351597cf2477?q=80&w=600&auto=format&fit=crop" class="search-result-thumb" alt="Solo Leveling">
+            <div class="search-result-content">
+              <h3 class="search-result-title">Solo Leveling: Arise</h3>
+              <div class="search-result-meta">
+                <span>Episode 12 • Arise</span> • <span>420 MB</span> • <span style="color:var(--accent-purple); font-weight:700;">1080p Full HD</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </main>
+
+    <!-- MOBILE BOTTOM NAVIGATION -->
+    <nav class="bottom-nav">
+      <a href="index.html" class="bottom-nav-item">
+        <i class="fa-solid fa-house"></i>
+        <span>Home</span>
+      </a>
+      <a href="shorts.html" class="bottom-nav-item">
+        <i class="fa-solid fa-bolt"></i>
+        <span>Shorts</span>
+      </a>
+      <a href="watchlist.html" class="bottom-nav-item">
+        <i class="fa-solid fa-bookmark"></i>
+        <span>Watchlist</span>
+      </a>
+      <a href="downloads.html" class="bottom-nav-item active">
+        <i class="fa-solid fa-download"></i>
+        <span>Downloads</span>
+      </a>
+      <a href="profile.html" class="bottom-nav-item">
+        <i class="fa-solid fa-user"></i>
+        <span>Profile</span>
+      </a>
+    </nav>
+
+  </div>
+
+  <script src="js/data.js"></script>
+  <script src="js/state.js"></script>
+  <script src="js/common.js"></script>
+</body>
+</html>

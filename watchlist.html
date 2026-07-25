@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Watchlist - AniTube</title>
+  <!-- Google Fonts & FontAwesome -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <div class="app-container">
+    
+    <!-- DESKTOP SIDEBAR NAVIGATION -->
+    <aside class="sidebar-nav">
+      <div class="brand-logo">
+        <i class="fa-solid fa-play"></i>
+        <span>Ani<span>Tube</span></span>
+      </div>
+
+      <div class="nav-group">
+        <span class="nav-group-title">Menu</span>
+        <a href="index.html" class="nav-item">
+          <i class="fa-solid fa-house"></i> Home
+        </a>
+        <a href="shorts.html" class="nav-item">
+          <i class="fa-solid fa-bolt"></i> Shorts
+        </a>
+        <a href="watchlist.html" class="nav-item active">
+          <i class="fa-solid fa-bookmark"></i> Watchlist
+        </a>
+        <a href="downloads.html" class="nav-item">
+          <i class="fa-solid fa-download"></i> Downloads
+        </a>
+        <a href="profile.html" class="nav-item">
+          <i class="fa-solid fa-user"></i> Profile
+        </a>
+      </div>
+    </aside>
+
+    <!-- MAIN CONTENT AREA -->
+    <main class="main-wrapper">
+      
+      <!-- TOP HEADER BAR -->
+      <header class="top-header">
+        <div class="mobile-brand">
+          <i class="fa-solid fa-bookmark" style="color:var(--accent-purple);"></i>
+          <span>Watchlist</span>
+        </div>
+
+        <div class="header-search-bar">
+          <i class="fa-solid fa-magnifying-glass search-icon-left"></i>
+          <input type="text" id="globalSearchInput" class="header-search-input" placeholder="Search watchlist...">
+        </div>
+
+        <div class="header-actions">
+          <a href="profile.html" class="icon-btn" title="Notifications"><i class="fa-regular fa-bell"></i></a>
+        </div>
+      </header>
+
+      <!-- PAGE CONTAINER -->
+      <div class="page-container">
+        <div class="page-header">
+          <h1 class="page-title"><i class="fa-solid fa-bookmark" style="color:var(--accent-purple);"></i> My Watchlist</h1>
+          <span style="color:var(--text-secondary); font-weight:600;" id="watchlistCount">3 Items Saved</span>
+        </div>
+
+        <!-- CATEGORY CHIPS SCROLLER -->
+        <div class="chips-container" style="padding:0 0 1.5rem 0;">
+          <button class="chip active">All Saved</button>
+          <button class="chip">Watching</button>
+          <button class="chip">Completed</button>
+          <button class="chip">Plan to Watch</button>
+        </div>
+
+        <!-- WATCHLIST GRID -->
+        <div class="grid-cards-layout" id="watchlistGridContainer">
+          <!-- Rendered dynamically -->
+        </div>
+      </div>
+
+    </main>
+
+    <!-- MOBILE BOTTOM NAVIGATION -->
+    <nav class="bottom-nav">
+      <a href="index.html" class="bottom-nav-item">
+        <i class="fa-solid fa-house"></i>
+        <span>Home</span>
+      </a>
+      <a href="shorts.html" class="bottom-nav-item">
+        <i class="fa-solid fa-bolt"></i>
+        <span>Shorts</span>
+      </a>
+      <a href="watchlist.html" class="bottom-nav-item active">
+        <i class="fa-solid fa-bookmark"></i>
+        <span>Watchlist</span>
+      </a>
+      <a href="downloads.html" class="bottom-nav-item">
+        <i class="fa-solid fa-download"></i>
+        <span>Downloads</span>
+      </a>
+      <a href="profile.html" class="bottom-nav-item">
+        <i class="fa-solid fa-user"></i>
+        <span>Profile</span>
+      </a>
+    </nav>
+
+  </div>
+
+  <script src="js/data.js"></script>
+  <script src="js/state.js"></script>
+  <script src="js/common.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const container = document.getElementById('watchlistGridContainer');
+      const countEl = document.getElementById('watchlistCount');
+      const watchlist = ANITUBE_STATE.watchlist || ANITUBE_DATA.trending;
+
+      if (countEl) countEl.textContent = `${watchlist.length} Items Saved`;
+
+      if (container) {
+        if (watchlist.length === 0) {
+          container.innerHTML = `<p style="color:var(--text-secondary); grid-column: 1 / -1; text-align:center; padding:3rem 0;">Your watchlist is currently empty. Explore anime to add!</p>`;
+        } else {
+          container.innerHTML = watchlist.map(item => `
+            <div class="anime-card" onclick="playShow('${item.id}')">
+              <div class="card-thumb-wrapper">
+                <img src="${item.posterUrl}" class="card-thumb" alt="${item.title}">
+                <div class="card-rating"><i class="fa-solid fa-star"></i> ${item.rating || '9.0'}</div>
+              </div>
+              <div class="card-info">
+                <h3 class="card-title">${item.title}</h3>
+                <div class="card-subtext">
+                  <span>${(item.genres || ['Anime']).join(', ')}</span>
+                </div>
+              </div>
+            </div>
+          `).join('');
+        }
+      }
+    });
+  </script>
+</body>
+</html>

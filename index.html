@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AniTube - Stream Anime & Movies</title>
+  <!-- Google Fonts & FontAwesome -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Main Stylesheet -->
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <div class="app-container">
+    
+    <!-- DESKTOP SIDEBAR NAVIGATION -->
+    <aside class="sidebar-nav">
+      <div class="brand-logo">
+        <i class="fa-solid fa-play"></i>
+        <span>Ani<span>Tube</span></span>
+      </div>
+
+      <div class="nav-group">
+        <span class="nav-group-title">Menu</span>
+        <a href="index.html" class="nav-item active">
+          <i class="fa-solid fa-house"></i> Home
+        </a>
+        <a href="shorts.html" class="nav-item">
+          <i class="fa-solid fa-bolt"></i> Shorts
+        </a>
+        <a href="watchlist.html" class="nav-item">
+          <i class="fa-solid fa-bookmark"></i> Watchlist
+        </a>
+        <a href="downloads.html" class="nav-item">
+          <i class="fa-solid fa-download"></i> Downloads
+        </a>
+        <a href="profile.html" class="nav-item">
+          <i class="fa-solid fa-user"></i> Profile
+        </a>
+      </div>
+    </aside>
+
+    <!-- MAIN CONTENT AREA -->
+    <main class="main-wrapper">
+      
+      <!-- TOP HEADER BAR -->
+      <header class="top-header">
+        <div class="mobile-brand">
+          <i class="fa-solid fa-play"></i>
+          <span>Ani<span>Tube</span></span>
+        </div>
+
+        <!-- Desktop Search Bar -->
+        <div class="header-search-bar">
+          <i class="fa-solid fa-magnifying-glass search-icon-left"></i>
+          <input type="text" id="globalSearchInput" class="header-search-input" placeholder="Search anime, movies, characters...">
+        </div>
+
+        <!-- Header Right Actions -->
+        <div class="header-actions">
+          <!-- Mobile Search Icon Button (Navigates to search.html) -->
+          <a href="search.html" class="icon-btn mobile-search-btn" title="Search">
+            <i class="fa-solid fa-magnifying-glass"></i>
+          </a>
+          <a href="profile.html" class="icon-btn" title="Notifications">
+            <i class="fa-regular fa-bell"></i>
+          </a>
+          <a href="profile.html">
+            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=150&auto=format&fit=crop" class="user-avatar-btn" alt="User Avatar">
+          </a>
+        </div>
+      </header>
+
+      <!-- CATEGORY CHIPS SCROLLER -->
+      <div class="chips-container" id="categoryChips">
+        <button class="chip active">All</button>
+        <button class="chip">Action</button>
+        <button class="chip">Supernatural</button>
+        <button class="chip">Dark Fantasy</button>
+        <button class="chip">Movies</button>
+        <button class="chip">Popular 2026</button>
+      </div>
+
+      <!-- HERO BANNER -->
+      <section class="hero-section">
+        <div class="hero-card" id="heroBannerCard">
+          <img src="https://images.unsplash.com/photo-1578632767115-351597cf2477?q=80&w=1600&auto=format&fit=crop" class="hero-bg" alt="Solo Leveling Hero">
+          <div class="hero-overlay"></div>
+          <div class="hero-content">
+            <span class="hero-badge"><i class="fa-solid fa-fire"></i> #1 Trending Worldwide</span>
+            <h1 class="hero-title" id="heroTitle">Solo Leveling: Arise</h1>
+            <div class="hero-meta">
+              <span class="rating"><i class="fa-solid fa-star"></i> 9.8</span>
+              <span>12 Episodes</span>
+              <span>Sub / Dub</span>
+            </div>
+            <p class="hero-desc" id="heroDesc">
+              In a world where hunters must battle deadly monsters, weak hunter Sung Jinwoo receives a mysterious quest that allows him to level up endlessly.
+            </p>
+            <div class="hero-buttons">
+              <button class="btn-primary" onclick="playShow('solo-leveling')">
+                <i class="fa-solid fa-play"></i> Watch Now
+              </button>
+              <button class="btn-secondary" onclick="ANITUBE_STATE.toggleWatchlist('solo-leveling')">
+                <i class="fa-solid fa-plus"></i> Watchlist
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- CONTINUE WATCHING ROW -->
+      <section class="section-wrapper">
+        <div class="section-header">
+          <h2 class="section-title"><i class="fa-solid fa-clock-rotate-left"></i> Continue Watching</h2>
+          <a href="profile.html" class="section-link">History <i class="fa-solid fa-chevron-right"></i></a>
+        </div>
+        <div class="horizontal-scroller" id="continueWatchingRow">
+          <!-- Rendered dynamically via JS -->
+        </div>
+      </section>
+
+      <!-- ANITUBE SHORTS REEL ROW -->
+      <section class="section-wrapper">
+        <div class="section-header">
+          <h2 class="section-title"><i class="fa-solid fa-bolt"></i> AniTube Shorts</h2>
+          <a href="shorts.html" class="section-link">View All <i class="fa-solid fa-chevron-right"></i></a>
+        </div>
+        <div class="horizontal-scroller" id="homeShortsRow">
+          <div class="shorts-home-card" onclick="location.href='shorts.html'">
+            <img src="https://images.unsplash.com/photo-1578632767115-351597cf2477?q=80&w=400&auto=format&fit=crop" class="shorts-card-thumb" alt="Short 1">
+            <div class="shorts-card-overlay">
+              <span class="tag-badge" style="width:fit-content;"><i class="fa-solid fa-bolt"></i> Shorts</span>
+              <span style="font-size:0.85rem; font-weight:700;">Sung Jinwoo Leveling Up ⚡</span>
+            </div>
+          </div>
+          <div class="shorts-home-card" onclick="location.href='shorts.html'">
+            <img src="https://images.unsplash.com/photo-1563089145-599997674d42?q=80&w=400&auto=format&fit=crop" class="shorts-card-thumb" alt="Short 2">
+            <div class="shorts-card-overlay">
+              <span class="tag-badge" style="width:fit-content;"><i class="fa-solid fa-bolt"></i> Shorts</span>
+              <span style="font-size:0.85rem; font-weight:700;">Mist Breathing 7th Form 🌫️</span>
+            </div>
+          </div>
+          <div class="shorts-home-card" onclick="location.href='shorts.html'">
+            <img src="https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?q=80&w=400&auto=format&fit=crop" class="shorts-card-thumb" alt="Short 3">
+            <div class="shorts-card-overlay">
+              <span class="tag-badge" style="width:fit-content;"><i class="fa-solid fa-bolt"></i> Shorts</span>
+              <span style="font-size:0.85rem; font-weight:700;">Gojo Unlimited Void 🤞</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- TRENDING NOW ROW -->
+      <section class="section-wrapper">
+        <div class="section-header">
+          <h2 class="section-title"><i class="fa-solid fa-arrow-trend-up"></i> Trending Now</h2>
+          <a href="search.html" class="section-link">See All <i class="fa-solid fa-chevron-right"></i></a>
+        </div>
+        <div class="horizontal-scroller" id="trendingRow">
+          <!-- Rendered dynamically via JS -->
+        </div>
+      </section>
+
+      <!-- RECOMMENDATIONS FOR YOU ROW -->
+      <section class="section-wrapper">
+        <div class="section-header">
+          <h2 class="section-title"><i class="fa-solid fa-sparkles"></i> Recommended For You</h2>
+        </div>
+        <div class="horizontal-scroller" id="recommendationsRow">
+          <!-- Rendered dynamically via JS -->
+        </div>
+      </section>
+
+    </main>
+
+    <!-- MOBILE BOTTOM NAVIGATION -->
+    <nav class="bottom-nav">
+      <a href="index.html" class="bottom-nav-item active">
+        <i class="fa-solid fa-house"></i>
+        <span>Home</span>
+      </a>
+      <a href="shorts.html" class="bottom-nav-item">
+        <i class="fa-solid fa-bolt"></i>
+        <span>Shorts</span>
+      </a>
+      <a href="watchlist.html" class="bottom-nav-item">
+        <i class="fa-solid fa-bookmark"></i>
+        <span>Watchlist</span>
+      </a>
+      <a href="downloads.html" class="bottom-nav-item">
+        <i class="fa-solid fa-download"></i>
+        <span>Downloads</span>
+      </a>
+      <a href="profile.html" class="bottom-nav-item">
+        <i class="fa-solid fa-user"></i>
+        <span>Profile</span>
+      </a>
+    </nav>
+
+  </div>
+
+  <!-- Scripts -->
+  <script src="js/data.js"></script>
+  <script src="js/state.js"></script>
+  <script src="js/common.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // Render Continue Watching
+      const continueRow = document.getElementById('continueWatchingRow');
+      if (continueRow) {
+        continueRow.innerHTML = ANITUBE_DATA.continueWatching.map(item => `
+          <div class="anime-card anime-card-wide" onclick="playShow('${item.id}')">
+            <div class="card-thumb-wrapper">
+              <img src="${item.posterUrl}" class="card-thumb" alt="${item.title}">
+              <div class="card-badge">Ep ${item.currentEp}</div>
+              <div class="card-progress-bar"><div class="card-progress-fill" style="width:${item.progress}%"></div></div>
+            </div>
+            <div class="card-info">
+              <h3 class="card-title">${item.title}</h3>
+              <div class="card-subtext"><span>${item.progress}% watched</span></div>
+            </div>
+          </div>
+        `).join('');
+      }
+
+      // Render Trending
+      const trendingRow = document.getElementById('trendingRow');
+      if (trendingRow) {
+        trendingRow.innerHTML = ANITUBE_DATA.trending.map(item => `
+          <div class="anime-card" onclick="playShow('${item.id}')">
+            <div class="card-thumb-wrapper">
+              <img src="${item.posterUrl}" class="card-thumb" alt="${item.title}">
+              <div class="card-rating"><i class="fa-solid fa-star"></i> ${item.rating}</div>
+            </div>
+            <div class="card-info">
+              <h3 class="card-title">${item.title}</h3>
+              <div class="card-subtext"><span>${item.genres.join(', ')}</span></div>
+            </div>
+          </div>
+        `).join('');
+      }
+
+      // Render Recommendations
+      const recRow = document.getElementById('recommendationsRow');
+      if (recRow) {
+        recRow.innerHTML = ANITUBE_DATA.recommendations.map(item => `
+          <div class="anime-card" onclick="playShow('${item.id}')">
+            <div class="card-thumb-wrapper">
+              <img src="${item.posterUrl}" class="card-thumb" alt="${item.title}">
+              <div class="card-rating"><i class="fa-solid fa-star"></i> ${item.rating}</div>
+            </div>
+            <div class="card-info">
+              <h3 class="card-title">${item.title}</h3>
+              <div class="card-subtext"><span>${item.genres.join(', ')}</span></div>
+            </div>
+          </div>
+        `).join('');
+      }
+    });
+  </script>
+</body>
+</html>
