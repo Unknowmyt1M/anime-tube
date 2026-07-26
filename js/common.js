@@ -113,7 +113,7 @@ function initGlobalSearch() {
   });
 }
 
-function playShow(showId) {
+function playShow(showId, epNum = 1) {
   ANITUBE_STATE.activeShowId = showId;
-  location.href = 'player.html';
+  location.href = `player.html?id=${encodeURIComponent(showId)}&ep=${epNum}`;
 }

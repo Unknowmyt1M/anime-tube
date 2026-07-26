@@ -31,6 +31,9 @@ const ANITUBE_STATE = {
     playbackRate: 1.0
   },
 
+  // Recent Searches Array
+  recentSearches: ['Solo Leveling', 'Demon Slayer', 'Jujutsu Kaisen'],
+
   // Analytics Event Queue Buffer
   analyticsQueue: [],
 
@@ -42,6 +45,9 @@ const ANITUBE_STATE = {
 
       const savedProgress = localStorage.getItem('anitube_watch_progress');
       if (savedProgress) this.watchProgress = JSON.parse(savedProgress);
+
+      const savedSearches = localStorage.getItem('anitube_recent_searches');
+      if (savedSearches) this.recentSearches = JSON.parse(savedSearches);
 
       const savedSettings = localStorage.getItem('anitube_player_settings');
       if (savedSettings) {
@@ -55,6 +61,25 @@ const ANITUBE_STATE = {
     } catch (e) {
       console.warn('AniTube State Init Error:', e);
     }
+  },
+
+  // Add Term to Recent Searches
+  addRecentSearch(term) {
+    if (!term || !term.trim()) return;
+    const cleanTerm = term.trim();
+    this.recentSearches = [cleanTerm, ...this.recentSearches.filter(s => s.toLowerCase() !== cleanTerm.toLowerCase())].slice(0, 10);
+    try {
+      localStorage.setItem('anitube_recent_searches', JSON.stringify(this.recentSearches));
+    } catch (e) {}
+  },
+
+  // Remove Term from Recent Searches
+  removeRecentSearch(term) {
+    if (!term) return;
+    this.recentSearches = this.recentSearches.filter(s => s.toLowerCase() !== term.toLowerCase());
+    try {
+      localStorage.setItem('anitube_recent_searches', JSON.stringify(this.recentSearches));
+    } catch (e) {}
   },
 
   // Save Progress for Anime Episode
