@@ -1626,7 +1626,7 @@ input:checked + .slider:before {
   border-bottom: 1px solid var(--border-subtle);
   padding-bottom: 0.75rem;
 }
-@media (min-width: 1025px) {
+@media (min-width: 850px) {
   .desktop-side-tabs {
     display: flex !important;
   }
@@ -1681,9 +1681,16 @@ input:checked + .slider:before {
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
-  max-height: none !important;
-  overflow-y: visible !important;
   padding-right: 0;
+}
+
+@media (max-width: 849px) {
+  .episodes-list {
+    flex: 1;
+    overflow-y: auto !important;
+    max-height: calc(100vh - 180px) !important;
+    padding-bottom: 2rem;
+  }
 }
 
 .episode-card {
