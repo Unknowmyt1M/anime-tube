@@ -160,10 +160,12 @@ document.addEventListener('DOMContentLoaded', () => {
   // --- YOUTUBE BUFFERING SPINNER LOGIC ---
   function showBufferingSpinner() {
     if (bufferingOverlay) bufferingOverlay.classList.add('show');
+    if (container) container.classList.add('buffering');
   }
 
   function hideBufferingSpinner() {
     if (bufferingOverlay) bufferingOverlay.classList.remove('show');
+    if (container) container.classList.remove('buffering');
   }
 
   if (video) {
@@ -179,7 +181,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // --- 2. HLS STREAMING ENGINE & CRASH RECOVERY INITIALIZATION ---
-  function initHlsEngine(sourceId = STATE.currentSource) {
+  async function initHlsEngine(sourceId = STATE.currentSource) {
     showBufferingSpinner();
     const serverObj = CONFIG.servers.find(s => s.id === sourceId) || CONFIG.servers[0];
     STATE.saveSetting('source', serverObj.id);
@@ -192,11 +194,28 @@ document.addEventListener('DOMContentLoaded', () => {
       hlsEngine = null;
     }
 
-    if (serverObj.type === 'hls') {
-      const streamUrl = serverObj.hlsUrl;
+    let streamUrl = serverObj.type === 'hls' ? serverObj.hlsUrl : serverObj.mp4Url;
 
+    // Fetch dynamic live HLS stream from Python Scraper API server on port 5005
+    try {
+      const epNum = currentEpisode.number || currentEpisode.num;
+      const apiRes = await fetch(`http://localhost:5005/api/extract?id=${currentShow.id}&ep=${epNum}`);
+      if (apiRes.ok) {
+        const apiData = await apiRes.json();
+        if (apiData.streams && apiData.streams.length > 0) {
+          const hlsObj = apiData.streams.find(s => s.type === 'hls' && s.hlsUrl) || apiData.streams[0];
+          if (hlsObj && hlsObj.hlsUrl) {
+            streamUrl = hlsObj.hlsUrl;
+            console.log(`[AniTube HLS Engine] Dynamic HLS stream loaded from Scraper API: ${streamUrl}`);
+          }
+        }
+      }
+    } catch (e) {
+      console.log(`[AniTube HLS Engine] Using fallback server stream: ${streamUrl}`);
+    }
+
+    if (streamUrl.includes('.m3u8') || serverObj.type === 'hls') {
       if (video.canPlayType('application/vnd.apple.mpegurl')) {
-        // Native Safari HLS
         video.src = streamUrl;
         video.addEventListener('loadedmetadata', onMediaReady);
       } 
@@ -223,31 +242,27 @@ document.addEventListener('DOMContentLoaded', () => {
           }
         });
 
-        // HLS.js Automatic Error Recovery
         hlsEngine.on(Hls.Events.ERROR, (event, data) => {
           if (data.fatal) {
             switch (data.type) {
               case Hls.ErrorTypes.NETWORK_ERROR:
-                console.warn('Network error encountered, trying to recover...', data);
                 hlsEngine.startLoad();
                 break;
               case Hls.ErrorTypes.MEDIA_ERROR:
-                console.warn('Media decode error, calling recoverMediaError()...', data);
                 hlsEngine.recoverMediaError();
                 break;
               default:
-                console.error('Fatal unrecoverable HLS error, switching server failover...', data);
                 handleStreamFailover();
                 break;
             }
           }
         });
       } else {
-        video.src = CONFIG.servers.find(s => s.type === 'mp4').mp4Url;
+        video.src = streamUrl;
         video.addEventListener('loadedmetadata', onMediaReady);
       }
     } else {
-      video.src = serverObj.mp4Url;
+      video.src = streamUrl;
       video.addEventListener('loadedmetadata', onMediaReady);
     }
 

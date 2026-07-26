@@ -979,6 +979,14 @@ video::cue {
   opacity: 1;
 }
 
+/* YOUTUBE STYLE: HIDE CENTER PLAY/PAUSE BUTTON WHEN BUFFERING SPINNER IS VISIBLE */
+.video-player-container.buffering .player-center-controls #btnPlayPause,
+.yt-buffering-overlay.show ~ .player-controls-overlay .player-center-controls #btnPlayPause {
+  opacity: 0 !important;
+  pointer-events: none !important;
+  transform: scale(0.6) !important;
+}
+
 .yt-buffering-spinner {
   width: 60px;
   height: 60px;
