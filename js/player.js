@@ -296,24 +296,44 @@ document.addEventListener('DOMContentLoaded', () => {
     if (backBtn) backBtn.onclick = () => showSubmenu(ytMenuMain);
   }
 
-  // Populate Quality Levels
+  // Populate Quality Levels Dynamically from Available Stream Manifest Heights
   function populateQualityLevels(levels) {
     if (!ytSubQuality) return;
 
     let html = `<div class="yt-menu-header yt-btn-back"><i class="fa-solid fa-arrow-left"></i> Quality</div>`;
-    html += `<div class="yt-menu-row ${STATE.currentQuality === 'auto' ? 'selected' : ''}" data-quality="auto">
-      <div class="yt-menu-left"><span>Auto (Recommended)</span></div>
-      ${STATE.currentQuality === 'auto' ? '<i class="fa-solid fa-check" style="color:var(--accent-purple);"></i>' : ''}
+    
+    const isAutoSel = STATE.currentQuality === 'auto';
+    html += `<div class="yt-menu-row ${isAutoSel ? 'selected' : ''}" data-quality="auto">
+      <div class="yt-menu-left"><span>Auto (Adaptive)</span></div>
+      ${isAutoSel ? '<i class="fa-solid fa-check" style="color:var(--accent-purple);"></i>' : ''}
     </div>`;
 
-    levels.forEach((lvl, idx) => {
-      const qName = `${lvl.height}p`;
-      const isSel = STATE.currentQuality === qName;
-      html += `<div class="yt-menu-row ${isSel ? 'selected' : ''}" data-quality="${qName}" data-level-idx="${idx}">
-        <div class="yt-menu-left"><span>${qName} (${Math.round(lvl.bitrate / 1000)} Kbps)</span></div>
-        ${isSel ? '<i class="fa-solid fa-check" style="color:var(--accent-purple);"></i>' : ''}
-      </div>`;
-    });
+    if (levels && levels.length > 0) {
+      // Sort levels highest to lowest (1080p -> 720p -> 480p -> 360p -> 144p)
+      const sortedLevels = [...levels].map((lvl, idx) => ({ ...lvl, origIndex: idx }))
+                                      .sort((a, b) => b.height - a.height);
+
+      sortedLevels.forEach((lvl) => {
+        const qName = `${lvl.height}p`;
+        const isSel = STATE.currentQuality === qName;
+        const bitrateKbps = Math.round(lvl.bitrate / 1000);
+        html += `<div class="yt-menu-row ${isSel ? 'selected' : ''}" data-quality="${qName}" data-level-idx="${lvl.origIndex}">
+          <div class="yt-menu-left"><span>${qName} (${bitrateKbps} Kbps)</span></div>
+          ${isSel ? '<i class="fa-solid fa-check" style="color:var(--accent-purple);"></i>' : ''}
+        </div>`;
+      });
+    } else {
+      // Default qualities fallback (1080p, 720p, 480p, 360p, 144p)
+      const defaultQualities = ['1080p (Full HD)', '720p (HD)', '480p (SD)', '360p (Low)', '144p (Data Saver)'];
+      defaultQualities.forEach((q) => {
+        const cleanQ = q.split(' ')[0];
+        const isSel = STATE.currentQuality === cleanQ;
+        html += `<div class="yt-menu-row ${isSel ? 'selected' : ''}" data-quality="${cleanQ}">
+          <div class="yt-menu-left"><span>${q}</span></div>
+          ${isSel ? '<i class="fa-solid fa-check" style="color:var(--accent-purple);"></i>' : ''}
+        </div>`;
+      });
+    }
 
     ytSubQuality.innerHTML = html;
     bindQualitySubmenuClicks();
@@ -338,11 +358,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (hlsEngine) {
       if (qName === 'auto') {
-        hlsEngine.currentLevel = -1;
+        hlsEngine.currentLevel = -1; // -1 triggers HLS.js Auto Adaptive Switching
       } else if (levelIdx >= 0) {
         hlsEngine.currentLevel = levelIdx;
+      } else if (hlsEngine.levels) {
+        const targetHeight = parseInt(qName, 10);
+        const foundIdx = hlsEngine.levels.findIndex(l => l.height === targetHeight);
+        if (foundIdx !== -1) {
+          hlsEngine.currentLevel = foundIdx;
+        }
+      }
+      if (hlsEngine.levels) {
+        populateQualityLevels(hlsEngine.levels);
       }
     }
+
     showToast(`Quality: ${qName}`);
     ANALYTICS.logEvent('quality_change', { quality: qName });
   }
