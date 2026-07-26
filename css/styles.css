@@ -968,11 +968,11 @@ video::cue {
   align-items: center;
   justify-content: center;
   z-index: 45;
-  background: rgba(0, 0, 0, 0.45);
-  backdrop-filter: blur(4px);
+  background: transparent;
+  backdrop-filter: none;
   pointer-events: none;
   opacity: 0;
-  transition: opacity 0.25s ease;
+  transition: opacity 0.2s ease;
 }
 
 .yt-buffering-overlay.show {
