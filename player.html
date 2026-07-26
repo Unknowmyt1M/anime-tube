@@ -151,8 +151,9 @@
 
               <!-- BOTTOM CONTROL BAR (EXACT YOUTUBE LAYOUT) -->
               <div class="player-bottom-bar">
-                <!-- RED PROGRESS BAR -->
+                <!-- RED PROGRESS BAR WITH TIME TOOLTIP -->
                 <div class="progress-slider-container" id="progressSliderContainer">
+                  <div class="slider-time-tooltip" id="sliderTimeTooltip">00:00</div>
                   <div class="progress-slider-fill" id="progressSliderFill" style="width: 0%;">
                     <div class="progress-slider-handle"></div>
                   </div>
@@ -190,6 +191,16 @@
               </div>
             </div>
 
+            <!-- STREAM STATS OVERLAY CARD -->
+            <div class="stream-stats-overlay" id="streamStatsOverlay" style="display:none;">
+              <div class="stats-card-header"><i class="fa-solid fa-chart-simple"></i> Stats for Nerds</div>
+              <div class="stats-row"><span>Resolution:</span> <strong id="statsResolution">1080p</strong></div>
+              <div class="stats-row"><span>Bitrate:</span> <strong id="statsBitrate">4500 Kbps</strong></div>
+              <div class="stats-row"><span>Viewport:</span> <strong id="statsViewport">1280x720</strong></div>
+              <div class="stats-row"><span>Engine:</span> <strong id="statsEngine">HLS.js / Native</strong></div>
+              <div class="stats-row"><span>Buffer:</span> <strong id="statsBuffer">14.2s</strong></div>
+            </div>
+
             <!-- YOUTUBE FLOATING IN-PLAYER SETTINGS POPUP MENU -->
             <div class="yt-player-settings-popup" id="ytSettingsPopup">
               
@@ -210,6 +221,15 @@
                 <div class="yt-menu-row" id="rowYtSubtitles">
                   <div class="yt-menu-left"><i class="fa-solid fa-closed-captioning"></i> <span>Subtitles</span></div>
                   <div class="yt-menu-right"><span id="txtYtValSubtitles">English [CC]</span> <i class="fa-solid fa-chevron-right"></i></div>
+                </div>
+                <div class="yt-menu-row" id="rowYtStats">
+                  <div class="yt-menu-left"><i class="fa-solid fa-chart-line"></i> <span>Stream Stats</span></div>
+                  <div class="yt-menu-right">
+                    <label class="switch" style="margin-left:auto;">
+                      <input type="checkbox" id="chkStreamStats">
+                      <span class="slider round"></span>
+                    </label>
+                  </div>
                 </div>
               </div>
 
