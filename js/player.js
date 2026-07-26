@@ -340,16 +340,24 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function bindQualitySubmenuClicks() {
+    if (!ytSubQuality) return;
     ytSubQuality.querySelectorAll('.yt-menu-row').forEach(row => {
-      row.onclick = () => {
+      row.onclick = (e) => {
+        e.stopPropagation();
         const q = row.getAttribute('data-quality');
-        const lvlIdx = parseInt(row.getAttribute('data-level-idx') || '-1', 10);
+        const levelAttr = row.getAttribute('data-level-idx');
+        const lvlIdx = (levelAttr !== null && levelAttr !== undefined) ? parseInt(levelAttr, 10) : -1;
         setQuality(q, lvlIdx);
         showSubmenu(ytMenuMain);
       };
     });
     const backBtn = ytSubQuality.querySelector('.yt-btn-back');
-    if (backBtn) backBtn.onclick = () => showSubmenu(ytMenuMain);
+    if (backBtn) {
+      backBtn.onclick = (e) => {
+        e.stopPropagation();
+        showSubmenu(ytMenuMain);
+      };
+    }
   }
 
   function setQuality(qName, levelIdx = -1) {
@@ -357,17 +365,25 @@ document.addEventListener('DOMContentLoaded', () => {
     if (txtValQuality) txtValQuality.textContent = qName === 'auto' ? 'Auto' : qName;
 
     if (hlsEngine) {
+      let targetLevel = -1;
       if (qName === 'auto') {
-        hlsEngine.currentLevel = -1; // -1 triggers HLS.js Auto Adaptive Switching
+        targetLevel = -1;
       } else if (levelIdx >= 0) {
-        hlsEngine.currentLevel = levelIdx;
-      } else if (hlsEngine.levels) {
+        targetLevel = levelIdx;
+      } else if (hlsEngine.levels && hlsEngine.levels.length > 0) {
         const targetHeight = parseInt(qName, 10);
-        const foundIdx = hlsEngine.levels.findIndex(l => l.height === targetHeight);
-        if (foundIdx !== -1) {
-          hlsEngine.currentLevel = foundIdx;
-        }
+        targetLevel = hlsEngine.levels.findIndex(l => l.height === targetHeight);
       }
+
+      // Force instant level switch on HLS.js engine
+      hlsEngine.currentLevel = targetLevel;
+      hlsEngine.nextLevel = targetLevel;
+      hlsEngine.loadLevel = targetLevel;
+
+      if (chkStreamStats && chkStreamStats.checked) {
+        updateStreamStatsOverlay();
+      }
+
       if (hlsEngine.levels) {
         populateQualityLevels(hlsEngine.levels);
       }

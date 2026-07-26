@@ -812,7 +812,7 @@ button:focus-visible, a:focus-visible, input:focus-visible {
   box-sizing: border-box;
 }
 
-@media (min-width: 1025px) {
+@media (min-width: 850px) {
   .player-page-grid {
     display: grid !important;
     grid-template-columns: minmax(0, 1fr) 350px !important;
@@ -1535,7 +1535,7 @@ input:checked + .slider:before {
   pointer-events: auto;
 }
 
-@media (max-width: 1024px) {
+@media (max-width: 849px) {
   .episodes-panel-container {
     position: fixed;
     left: 0;
@@ -1576,7 +1576,7 @@ input:checked + .slider:before {
   }
 }
 
-@media (min-width: 1025px) {
+@media (min-width: 850px) {
   .episodes-panel-container {
     display: flex !important;
     flex-direction: column !important;
