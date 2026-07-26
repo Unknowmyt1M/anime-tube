@@ -928,13 +928,20 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // --- 8. YOUTUBE SETTINGS MENU HANDLERS ---
+  if (settingsPopup) {
+    settingsPopup.onclick = (e) => {
+      e.stopPropagation();
+    };
+  }
+
   if (settingsBtn && settingsPopup) {
     settingsBtn.onclick = (e) => {
       e.stopPropagation();
+      showSubmenu(ytMenuMain);
       settingsPopup.classList.toggle('show');
     };
     document.addEventListener('click', (e) => {
-      if (!settingsPopup.contains(e.target) && e.target !== settingsBtn) {
+      if (settingsPopup && !settingsPopup.contains(e.target) && e.target !== settingsBtn) {
         settingsPopup.classList.remove('show');
       }
     });
@@ -952,14 +959,35 @@ document.addEventListener('DOMContentLoaded', () => {
   const rowSpeed = document.getElementById('rowYtSpeed');
   const rowSubtitles = document.getElementById('rowYtSubtitles');
 
-  if (rowServer) rowServer.onclick = () => showSubmenu(ytSubServer);
-  if (rowQuality) rowQuality.onclick = () => showSubmenu(ytSubQuality);
-  if (rowSpeed) rowSpeed.onclick = () => showSubmenu(ytSubSpeed);
-  if (rowSubtitles) rowSubtitles.onclick = () => showSubmenu(ytSubSubtitles);
+  if (rowServer) {
+    rowServer.onclick = (e) => {
+      e.stopPropagation();
+      showSubmenu(ytSubServer);
+    };
+  }
+  if (rowQuality) {
+    rowQuality.onclick = (e) => {
+      e.stopPropagation();
+      showSubmenu(ytSubQuality);
+    };
+  }
+  if (rowSpeed) {
+    rowSpeed.onclick = (e) => {
+      e.stopPropagation();
+      showSubmenu(ytSubSpeed);
+    };
+  }
+  if (rowSubtitles) {
+    rowSubtitles.onclick = (e) => {
+      e.stopPropagation();
+      showSubmenu(ytSubSubtitles);
+    };
+  }
 
   // Speed Rows
   document.querySelectorAll('#ytSubSpeed .yt-menu-row').forEach(row => {
-    row.onclick = () => {
+    row.onclick = (e) => {
+      e.stopPropagation();
       const speed = parseFloat(row.getAttribute('data-speed'));
       video.playbackRate = speed;
       STATE.saveSetting('playbackRate', speed);
