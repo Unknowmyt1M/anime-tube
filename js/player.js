@@ -186,6 +186,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const serverObj = CONFIG.servers.find(s => s.id === sourceId) || CONFIG.servers[0];
     STATE.saveSetting('source', serverObj.id);
     if (txtValServer) txtValServer.textContent = serverObj.name;
+    populateServerSubmenu();
+
+    const prevPosition = (video && !isNaN(video.currentTime) && video.currentTime > 2) ? video.currentTime : 0;
 
     ANALYTICS.logEvent('source_change', { sourceId: serverObj.id, serverName: serverObj.name });
 
@@ -214,10 +217,17 @@ document.addEventListener('DOMContentLoaded', () => {
       console.log(`[AniTube HLS Engine] Using fallback server stream: ${streamUrl}`);
     }
 
+    const onReadyWithRestore = () => {
+      onMediaReady();
+      if (prevPosition > 2 && video) {
+        video.currentTime = prevPosition;
+      }
+    };
+
     if (streamUrl.includes('.m3u8') || serverObj.type === 'hls') {
       if (video.canPlayType('application/vnd.apple.mpegurl')) {
         video.src = streamUrl;
-        video.addEventListener('loadedmetadata', onMediaReady);
+        video.addEventListener('loadedmetadata', onReadyWithRestore, { once: true });
       } 
       else if (window.Hls && Hls.isSupported()) {
         hlsEngine = new Hls({
@@ -231,7 +241,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         hlsEngine.on(Hls.Events.MANIFEST_PARSED, (event, data) => {
           populateQualityLevels(data.levels);
-          onMediaReady();
+          onReadyWithRestore();
         });
 
         hlsEngine.on(Hls.Events.LEVEL_SWITCHED, (event, data) => {
@@ -262,14 +272,12 @@ document.addEventListener('DOMContentLoaded', () => {
         });
       } else {
         video.src = streamUrl;
-        video.addEventListener('loadedmetadata', onMediaReady);
+        video.addEventListener('loadedmetadata', onReadyWithRestore, { once: true });
       }
     } else {
       video.src = streamUrl;
-      video.addEventListener('loadedmetadata', onMediaReady);
+      video.addEventListener('loadedmetadata', onReadyWithRestore, { once: true });
     }
-
-    populateServerSubmenu();
   }
 
   // Stream Failover Handler
@@ -278,11 +286,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const nextIdx = currentIdx + 1;
     if (nextIdx < CONFIG.failoverOrder.length) {
       const nextSource = CONFIG.failoverOrder[nextIdx];
-      console.log(`Failing over to source: ${nextSource}`);
+      const srvObj = CONFIG.servers.find(s => s.id === nextSource);
+      showToast(`Server issue detected. Switching to ${srvObj ? srvObj.name : nextSource}...`);
       initHlsEngine(nextSource);
     } else {
       hideBufferingSpinner();
-      showToast('Unable to load video stream. Please check connection.');
+      showToast('All streaming servers unavailable. Please try again later.');
     }
   }
 
