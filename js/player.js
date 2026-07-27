@@ -472,13 +472,16 @@ document.addEventListener('DOMContentLoaded', () => {
     ANALYTICS.logEvent('subtitle_change', { subtitle: subId });
   }
 
-  // ACCURATE TIME-SYNCED SUBTITLE CUE EVALUATOR
+  // ACCURATE TIME-SYNCED SUBTITLE CUE EVALUATOR (WITH DRIFT OFFSET SUPPORT)
   function updateSubtitleCueForTime(currentTime) {
     const subOverlay = document.getElementById('customSubtitleOverlay');
     if (!subOverlay || STATE.currentSubtitle === 'off') return;
 
+    const offset = SUBTITLES.getOffset ? SUBTITLES.getOffset() : 0;
+    const adjustedTime = Math.max(0, currentTime - offset);
+
     const langCues = SUBTITLE_CUES[STATE.currentSubtitle] || SUBTITLE_CUES.en;
-    const matchingCue = langCues.find(c => currentTime >= c.start && currentTime < c.end);
+    const matchingCue = langCues.find(c => adjustedTime >= c.start && adjustedTime < c.end);
     if (matchingCue) {
       subOverlay.textContent = matchingCue.text;
       subOverlay.style.display = 'block';
