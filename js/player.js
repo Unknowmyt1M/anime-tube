@@ -238,6 +238,9 @@ document.addEventListener('DOMContentLoaded', () => {
           const levelIdx = data.level;
           if (hlsEngine.levels[levelIdx]) {
             const res = hlsEngine.levels[levelIdx].height;
+            if (STATE.currentQuality === 'auto' && txtValQuality) {
+              txtValQuality.textContent = `Auto (${res}p)`;
+            }
             showToast(`Switched to ${res}p`);
           }
         });
@@ -475,9 +478,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!subOverlay || STATE.currentSubtitle === 'off') return;
 
     const langCues = SUBTITLE_CUES[STATE.currentSubtitle] || SUBTITLE_CUES.en;
-    const loopTime = currentTime % 65;
-
-    const matchingCue = langCues.find(c => loopTime >= c.start && loopTime < c.end);
+    const matchingCue = langCues.find(c => currentTime >= c.start && currentTime < c.end);
     if (matchingCue) {
       subOverlay.textContent = matchingCue.text;
       subOverlay.style.display = 'block';
@@ -1022,7 +1023,18 @@ document.addEventListener('DOMContentLoaded', () => {
   function renderEpisodesList() {
     if (!episodesListContainer) return;
 
-    const episodes = ANITUBE_DATA.episodes[currentShow.id] || ANITUBE_DATA.episodes['solo-leveling'] || [];
+    let episodes = ANITUBE_DATA.episodes[currentShow.id];
+    if (!episodes || episodes.length === 0) {
+      const count = currentShow.episodesCount || currentShow.episodes || 12;
+      episodes = Array.from({ length: count }, (_, i) => ({
+        id: `${currentShow.id}-ep-${i + 1}`,
+        number: i + 1,
+        title: `Episode ${i + 1}`,
+        thumbnail: currentShow.posterUrl || currentShow.banner,
+        duration: '24m'
+      }));
+    }
+
     const activeNum = currentEpisode.number || currentEpisode.num;
     const query = (epSearchInput ? epSearchInput.value : '').toLowerCase().trim();
 
@@ -1040,7 +1052,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const epN = ep.number || ep.num;
       const isActive = epN === activeNum;
       return `
-        <div class="episode-card ${isActive ? 'active' : ''}" onclick="window.location.href='player.html?id=${currentShow.id}&ep=${epN}'">
+        <div class="episode-card ${isActive ? 'active' : ''}" onclick="if(episodesPanel) episodesPanel.classList.remove('open','snap-full'); if(sheetBackdrop) sheetBackdrop.classList.remove('active'); window.location.href='player.html?id=${currentShow.id}&ep=${epN}';">
           <div class="ep-thumb-wrapper">
             <img src="${ep.thumbnail || ep.thumbUrl || currentShow.banner}" class="ep-thumb" alt="${ep.title}">
             <div class="ep-play-overlay">
@@ -1069,6 +1081,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (episodesListContainer) episodesListContainer.style.display = 'flex';
       if (episodesControlsHeader) episodesControlsHeader.style.display = 'flex';
       if (desktopSideRecContainer) desktopSideRecContainer.style.display = 'none';
+      renderEpisodesList();
     };
 
     tabBtnRecommendations.onclick = () => {
